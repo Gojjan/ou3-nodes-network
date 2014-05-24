@@ -107,7 +107,11 @@ public class Node {
 		}
 	}
 	public void timeTick(){
-		
+		//kolla om det finns något i kön
+		//???
+		//lägg till saker i kön
+		//???
+		//profit
 	}
 	public void sendMessage(QueuedMessage qdm){
 		
