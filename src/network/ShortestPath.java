@@ -22,7 +22,8 @@ public class ShortestPath {
 	public int getDistance(){
 		return distance;
 	}
-	public boolean compareDistance(ShortestPath sp){
-		return true;
+	//om sp1.compareDistance(sp2) > 0 då är sp1 kortare än sp2
+	public int compareDistance(ShortestPath sp){
+		return sp.getDistance() - distance;
 	}
 }
