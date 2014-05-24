@@ -1,7 +1,6 @@
 package network;
 
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.Queue;
 
 import com.sun.org.apache.xalan.internal.xsltc.runtime.Hashtable;
@@ -121,5 +120,8 @@ public class Node {
 	}
 	public void setRepeater(){
 		isRepeater = true;
+	}
+	public boolean getRepeater(){
+		return isRepeater;
 	}
 }
