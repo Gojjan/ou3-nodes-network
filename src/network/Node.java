@@ -9,7 +9,7 @@ import com.sun.org.apache.xalan.internal.xsltc.runtime.Hashtable;
 public class Node {
 	private Hashtable eventTable;
 	private Hashtable sendRequests;
-	private boolean isRepeater;
+	private boolean isRepeater = false;
 	private boolean isHoldingMessage;
 	private Position pos;
 	private ArrayList neighbours;
@@ -22,7 +22,6 @@ public class Node {
 	public void receiveMessage(Object o){
 		if(o instanceof Agent){
 			Agent agent = (Agent)o;
-			if(agent.getTimeToLive() > 1){
 			agent.setTimeToLive(agent.getTimeToLive()-1);
 			Hashtable agentTable = agent.getEventTable();
 			ArrayList<Integer> agentKeys = agent.getDefinedKeys();
@@ -69,24 +68,43 @@ public class Node {
 					agentTable.put(definedKeys.get(i), eventTable.get(definedKeys.get(i)));
 				}
 			}
-			/*ArrayList<Integer> agentKeys = new ArrayList<Integer>();
-			Enumeration keyenum = agentTable.keys();
-			while(keyenum.hasMoreElements()){
-				Object element = keyenum.nextElement();
-				agentKeys.add((Integer)element);
-			}
-			
-			for(int i = 0; i < agentKeys.size(); i++){
-				
-			}*/
-			QueuedMessage qdMessage = new QueuedMessage(agent, position);
-			sendQueue.add(qdMessage);
-			
+			if(agent.getTimeToLive() > 1){
+				//måste ändra så att den (om möjligt) skickar/köar till random granne den inte varit hos
+				QueuedMessage qdMessage = new QueuedMessage(agent, position);
+				sendQueue.add(qdMessage);
 			}
 		} else if (o instanceof Request){
-			
+			//Någonstans måste det läggas till så att den kollar om distance till eventet är noll från denna nod och då göra en response.
+			Request request = (Request) o;
+			Position nextpos;
+			boolean isOnTrack = false;
+			for(int i = 0; i < definedKeys.size(); i++){
+				if(definedKeys.get(i) == request.getTargetId()){
+					isOnTrack = true;
+				}
+			}
+			if(isOnTrack){
+				ShortestPath sp = (ShortestPath) eventTable.get(request.getTargetId());
+				nextpos = sp.getNextDirection();
+			} else {
+				request.setTimeToLive(request.getTimeToLive()-1);
+				if(request.getTimeToLive() > 1){
+					request.addPosToPathHome(position);
+					//måste ändra så att den (om möjligt) skickar/köar till random granne den inte varit hos
+					QueuedMessage qdMessage = new QueuedMessage(request, position);
+					sendQueue.add(qdMessage);
+				}
+			}
 		} else if (o instanceof Response){
-			
+			Response response = (Response) o;
+			response.popNextPosition();
+			if(response.getIsHome()){
+				//asddas, skriv ut skit
+			} else {
+				Position nextpos = response.getNextPostion();
+				QueuedMessage qdMessage = new QueuedMessage(response, nextpos);
+				sendQueue.add(qdMessage);
+			}
 		}
 	}
 	public void timeTick(){
@@ -102,6 +120,6 @@ public class Node {
 		return pos;
 	}
 	public void setRepeater(){
-		
+		isRepeater = true;
 	}
 }
