@@ -26,4 +26,7 @@ public class ShortestPath {
 	public int compareDistance(ShortestPath sp){
 		return sp.getDistance() - distance;
 	}
+	public boolean isEmpty(){
+		return positionStack.isEmpty();
+	}
 }
