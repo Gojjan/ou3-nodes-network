@@ -36,29 +36,29 @@ public class Network {
 	
 	public ArrayList<Position> checkNeighbours(Position pos){
 		ArrayList<Position> neighbours = new ArrayList<Position>();
-		try{ 
+		try{
 			neighbours.add(pos.getPosToNorth());
 		}catch (IndexOutOfBoundsException e){}
 		try{
-			 neighbours.add(pos.getPosToNorthEast());
+			neighbours.add(pos.getPosToNorthEast());
 		}catch (IndexOutOfBoundsException e){}
 		try{
-			 neighbours.add(pos.getPosToEast());
+			neighbours.add(pos.getPosToEast());
 		}catch (IndexOutOfBoundsException e){}
 		try{
-			 neighbours.add(pos.getPosToSouthEast());
+			neighbours.add(pos.getPosToSouthEast());
 		}catch (IndexOutOfBoundsException e){}
 		try{
-			 neighbours.add(pos.getPosToSouth());
+			neighbours.add(pos.getPosToSouth());
 		}catch (IndexOutOfBoundsException e){}
 		try{
-			 neighbours.add(pos.getPosToSouthWest());
+			neighbours.add(pos.getPosToSouthWest());
 		}catch (IndexOutOfBoundsException e){}
 		try{
-			 neighbours.add(pos.getPosToWest());
+			neighbours.add(pos.getPosToWest());
 		}catch (IndexOutOfBoundsException e){}
 		try{
-			 neighbours.add(pos.getPosToNorthWest());
+			neighbours.add(pos.getPosToNorthWest());
 		}catch (IndexOutOfBoundsException e){}
 		
 		return neighbours;
