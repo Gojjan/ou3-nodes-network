@@ -20,4 +20,7 @@ public class Response extends Message{
 		sp.popNextDirection();
 		this.setPathHome(sp);
 	}
+	public Event getEvent(){
+		return foundEvent;
+	}
 }
