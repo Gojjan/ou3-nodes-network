@@ -5,7 +5,7 @@ import java.util.Queue;
 
 import com.sun.org.apache.xalan.internal.xsltc.runtime.Hashtable;
 
-public class Node {
+public class Node{
 	private Hashtable eventTable;
 	private Hashtable sendRequests;
 	private boolean isRepeater = false;
@@ -15,7 +15,15 @@ public class Node {
 	private Queue<QueuedMessage> sendQueue;
 	private Position position;
 	private ArrayList<Integer> definedKeys = new ArrayList<Integer>();
-	public Node(Position npos){
+	private double eventChance;
+	private double agentChance;
+	private Network network;
+	
+	public Node(Position npos, double eventchance, double agentchance, Network nnetwork){
+		pos = npos;
+		eventChance = eventchance;
+		agentChance = agentchance;
+		network = nnetwork;
 		
 	}
 	public void receiveMessage(Object o){
@@ -98,6 +106,10 @@ public class Node {
 			Response response = (Response) o;
 			response.popNextPosition();
 			if(response.getIsHome()){
+				Event responseEvent = response.getEvent();
+				Position eventpos = responseEvent.getHomePos();
+				System.out.println("Event id: "+responseEvent.getID()+", event date of birth: "
+						+responseEvent.getDateOfBirth()+", event place of birth: ["+eventpos.getX()+","+eventpos.getY()+"]");
 				//asddas, skriv ut skit
 			} else {
 				Position nextpos = response.getNextPostion();
@@ -107,11 +119,18 @@ public class Node {
 		}
 	}
 	public void timeTick(){
+		if(Math.random() <= eventChance){
+			Event event = new Event(network.createUniqueID(),pos,network.getTime());
+			if(Math.random() <= agentChance){
+				
+			}
+		}
+		//kanske skapa event
+		//kanske skapa agent, lägg agent i kön
 		//kolla om det finns något i kön
-		//???
-		//lägg till saker i kön
-		//???
-		//profit
+		//skicka sak från kön
+		
+		//att lägga till saker i kön sker automatisk när en annan nod skickar till denna, 
 	}
 	public void sendMessage(QueuedMessage qdm){
 		
