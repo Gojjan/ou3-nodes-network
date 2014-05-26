@@ -6,22 +6,58 @@ import java.util.Queue;
 
 import com.sun.org.apache.xalan.internal.xsltc.runtime.Hashtable;
 
+/** Node är en klass som representerar en sensornod för att användas i en 
+ * simulering av ett nätverk. Sensor nodens beteende är likt det av en nod i 
+ * rumor-routing algoritmen. 
+ * 
+ * @author Henrik Sjöström
+ * @version 1.0 Maj 27 2014 
+ */
 public class Node{
+	/** En tabell med nodens {@link Event} objekt. */
 	private Hashtable eventTable;
+	/** En tabell med skickade {@link Message} objekt.*/
 	private Hashtable sentRequestsHT;
+	/** Kö med {@link Request} objekt. */
 	private ArrayList<Request> requests;
+	/** En flagga för om noden ska skicka {@link Request} objekt. */
 	private boolean isRepeater = false;
+	/** Berättar om noden har ett meddelande.
+	 * @see Message
+	 */
 	private boolean isHoldingMessage;
+	/** Nodes position.
+	 * @see Position
+	 */
 	private Position pos;
+	/** Lista med grannar. */
 	private ArrayList<Position> neighbours = new ArrayList<Position>();
+	/** Kö med meddelanden.
+	 * @see QueuedMessage
+	 */
 	private Queue<QueuedMessage> sendQueue;
+	/** En lista med intressanta nycklar i nodens tabell.*/
 	private ArrayList<Integer> definedKeys = new ArrayList<Integer>();
+	/** Chans att skapa ett {@link Event}. */
 	private double eventChance;
+	/** Chans att skapa en {@link Agent}. */
 	private double agentChance;
+	/** {@link Network} objektet som noden finns plaserad i. */
 	private Network network;
+	/** Lista med {@link Event} objekt. */
 	private ArrayList<Event> eventArrayList = new ArrayList<Event>();
+	/** Tidsteg kvar tills nästa gång {@link Request} objekt ska skickas. */
 	private int repeaterTime;
 	
+	/** Skapar en nod.
+	 * 
+	 * @param npos							nodens position
+	 * @param eventchance					nodens chans att skapa ett {@link Event}
+	 * @param agentchance					nodens chans att skapa en {@link Agent}
+	 * @param nnetwork						nätverket noden skapades i
+	 * @see Position
+	 * @see Network
+	 */
 	public Node(Position npos, double eventchance, double agentchance, Network nnetwork){
 		pos = npos;
 		eventChance = eventchance;
@@ -30,6 +66,11 @@ public class Node{
 		sendQueue = new LinkedList<QueuedMessage>();
 		eventTable = new Hashtable();
 	}
+	
+	/**
+	 * 
+	 * @param o
+	 */
 	public void receiveMessage(Object o){
 		if(o instanceof QueuedMessage){
 			QueuedMessage qd = (QueuedMessage) o;
@@ -135,6 +176,7 @@ public class Node{
 			}
 		}
 	}
+	/** Noden tar ett tidssteg. */
 	public void timeTick(){
 		if(neighbours.isEmpty()){
 			neighbours = network.checkNeighbours(pos);
@@ -205,23 +247,40 @@ public class Node{
 			sendMessage(qdm);
 		}
 	}
+	
+	/** Skickar ett {@link Message} objekt. */
 	public boolean sendMessage(QueuedMessage qdm){
 		Position posa = qdm.getDestination();
 		network.GetNodeAtPosition(posa).receiveMessage(qdm);
 		return true;
 	}
+	/** Returnerar om noden har ett meddelande.
+	 * 
+	 * @return								nodens meddelande
+	 */
 	public boolean getIsHoldingMessage(){
 		return isHoldingMessage;
 	}
+	/** Returnerar nodens position.
+	 * 
+	 * @return								nodens position
+	 * @see Position
+	 */
 	public Position getPosition(){
 		return pos;
 	}
+	/** Flagga att noden skapar {@link Request} objekt. */
 	public void setRepeater(){
 		isRepeater = true;
 		requests = new ArrayList<Request>();
 		sentRequestsHT = new Hashtable();
 		repeaterTime = 400;
 	}
+	/** Returnerar om noden skapar {@link Request} objekt.
+	 * 
+	 * @return								om noden skapar {@link Request} 
+	 * 										objekt elelr ej
+	 */
 	public boolean getRepeater(){
 		return isRepeater;
 	}
