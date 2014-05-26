@@ -55,9 +55,17 @@ public class Event {
 	public Position getHomePos(){
 		return homePos;
 	}
+	/** Sätter händelsens födelsetidssteg.
+	 * 
+	 * @param date			födelsetidssteg
+	 */
 	public void setDateOfBirth(int date){
 		dateOfBirth = date;
 	}
+	/** Sätter händelsens {@link Position} objekt.
+	 * 
+	 * @param pos			händelsens position.
+	 */
 	public void setHomePos(Position pos){
 		homePos = pos;
 	}
