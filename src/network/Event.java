@@ -10,6 +10,9 @@ public class Event {
 		homePos = pos;
 		dateOfBirth = dob;
 	}
+	public void setID(int id){
+		uniqueID = id;
+	}
 	public int getID(){
 		return uniqueID;
 	}
@@ -18,5 +21,11 @@ public class Event {
 	}
 	public Position getHomePos(){
 		return homePos;
+	}
+	public void setDateOfBirth(int date){
+		dateOfBirth = date;
+	}
+	public void setHomePos(Position pos){
+		homePos = pos;
 	}
 }
