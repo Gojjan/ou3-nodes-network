@@ -27,6 +27,7 @@ public class Agent extends Message{
 		ShortestPath sp = new ShortestPath(pos);
 		eventTable.put(event.getID(), sp);
 		this.setTimeToLive(x);
+		visitNode(pos);
 	}
 	
 	/** Returnerar tabellen med händelser. 
