@@ -119,7 +119,6 @@ public class Node{
 						sendQueue.add(qdMessage);
 					}
 				} else {
-					
 					//create Response
 				}
 			} else if (qd.getType() == 3){
