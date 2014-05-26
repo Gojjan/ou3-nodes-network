@@ -112,7 +112,20 @@ public class Node{
 					if(request.getTimeToLive() > 1){
 						request.addPosToPathHome(pos);
 						//måste ändra så att den (om möjligt) skickar/köar till random granne den inte varit hos
-						QueuedMessage qdMessage = new QueuedMessage(request, pos);
+						ArrayList<Position> newNeighbours = randomizeOrder();
+						boolean foundDestination = false;
+						int i = 0;
+						while(!foundDestination && i < newNeighbours.size()){
+							if(!request.visitedNodeI(newNeighbours.get(i))){
+								foundDestination = true;
+								nextpos = newNeighbours.get(i);
+							}
+							i++;
+						}
+						if(nextpos == null){
+							nextpos = newNeighbours.get(0);
+						}
+						QueuedMessage qdMessage = new QueuedMessage(request, nextpos);
 						sendQueue.add(qdMessage);
 					}
 				} else {
