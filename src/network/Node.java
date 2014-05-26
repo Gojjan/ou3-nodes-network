@@ -196,6 +196,7 @@ public class Node{
 				Position nextpos = (Position) neighbours.get((int) Math.random()*(neighbours.size()-1));
 				//create agent
 				//add agent to sendqueue
+				
 				QueuedMessage qdm = new QueuedMessage(agent, pos);
 				sendQueue.add(qdm);
 			}
@@ -224,5 +225,30 @@ public class Node{
 	}
 	public boolean getRepeater(){
 		return isRepeater;
+	}
+	private ArrayList randomizeOrder(){
+		ArrayList<Position> reOrdered = new ArrayList<Position>();
+		ArrayList<Integer> defined = new ArrayList<Integer>();
+		boolean matched = false;
+		for(int i = 0; i < neighbours.size(); i++){
+			matched = false;
+			while(!matched){
+				int randomPosIndex = (int) (Math.random()*neighbours.size());
+				boolean unDefined = true;
+				for(int j = 0; j < defined.size(); j++){
+					if(randomPosIndex == defined.get(j)){
+						unDefined = false;
+					}
+				}
+				if(unDefined == true){
+					Position pos2 = neighbours.get(randomPosIndex);
+					reOrdered.add(pos2);
+					defined.add(randomPosIndex);
+					matched = true;
+				}
+			}
+		}
+		
+		return reOrdered;
 	}
 }
