@@ -15,7 +15,6 @@ public class Node{
 	private Position pos;
 	private ArrayList<Position> neighbours = new ArrayList<Position>();
 	private Queue<QueuedMessage> sendQueue;
-	private Position position;
 	private ArrayList<Integer> definedKeys = new ArrayList<Integer>();
 	private double eventChance;
 	private double agentChance;
@@ -85,7 +84,7 @@ public class Node{
 				if(agent.getTimeToLive() > 1){
 					agent.setEventTable(agentTable);
 					//måste ändra så att den (om möjligt) skickar/köar till random granne den inte varit hos
-					QueuedMessage qdMessage = new QueuedMessage(agent, position);
+					QueuedMessage qdMessage = new QueuedMessage(agent, pos);
 					sendQueue.add(qdMessage);
 				}
 			} else if (qd.getType() == 2){
@@ -111,9 +110,9 @@ public class Node{
 				} else if (foundEvent != true){
 					request.setTimeToLive(request.getTimeToLive()-1);
 					if(request.getTimeToLive() > 1){
-						request.addPosToPathHome(position);
+						request.addPosToPathHome(pos);
 						//måste ändra så att den (om möjligt) skickar/köar till random granne den inte varit hos
-						QueuedMessage qdMessage = new QueuedMessage(request, position);
+						QueuedMessage qdMessage = new QueuedMessage(request, pos);
 						sendQueue.add(qdMessage);
 					}
 				} else {
@@ -194,6 +193,7 @@ public class Node{
 			
 			if(Math.random() <= agentChance){
 				Agent agent = new Agent(event, network.getAgentTimeToLive(), pos);
+				Position nextpos = (Position) neighbours.get((int) Math.random()*(neighbours.size()-1));
 				//create agent
 				//add agent to sendqueue
 				QueuedMessage qdm = new QueuedMessage(agent, pos);
