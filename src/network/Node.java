@@ -84,6 +84,20 @@ public class Node{
 				if(agent.getTimeToLive() > 1){
 					agent.setEventTable(agentTable);
 					//måste ändra så att den (om möjligt) skickar/köar till random granne den inte varit hos
+					ArrayList<Position> newNeighbours = randomizeOrder();
+					Position nextpos = null;
+					boolean foundDestination = false;
+					int i = 0;
+					while(!foundDestination && i < newNeighbours.size()){
+						if(!agent.visitedNodeI(newNeighbours.get(i))){
+							foundDestination = true;
+							nextpos = newNeighbours.get(i);
+						}
+						i++;
+					}
+					if(nextpos == null){
+						nextpos = newNeighbours.get(0);
+					}
 					QueuedMessage qdMessage = new QueuedMessage(agent, pos);
 					sendQueue.add(qdMessage);
 				}
