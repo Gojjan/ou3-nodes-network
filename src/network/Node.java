@@ -176,7 +176,13 @@ public class Node{
 				if(!lucky){
 					sendQueue.add(qdm);
 				} else {
-					//skriv ut skit
+					for(int i = 0; i < events.size(); i++){
+						Event event = (Event) events.get(i);
+						if(event.getID() == requestID){
+							System.out.println("Event id: "+requestID+", event date of birth: "
+									+event.getDateOfBirth()+", event place of birth: ["+pos.getX()+","+pos.getY()+"]\n");
+						}
+					}
 				}
 			}
 			if(repeaterTime > 0)
