@@ -6,6 +6,13 @@ import java.util.Queue;
 
 import com.sun.org.apache.xalan.internal.xsltc.runtime.Hashtable;
 
+/** Node är en klass som representerar en sensornod för att användas i en 
+ * simulering av ett nätverk. Sensor nodens beteende är likt det av en nod i 
+ * rumor-routing algoritmen. 
+ * 
+ * @author Henrik Sjöström
+ * @version 1.0 Maj 27 2014 
+ */
 public class Node{
 	private Hashtable eventTable;
 	private Hashtable sentRequestsHT;
