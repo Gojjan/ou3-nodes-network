@@ -28,16 +28,13 @@ public class Event {
 		homePos = pos;
 		dateOfBirth = dob;
 	}
-<<<<<<< HEAD
 	public void setID(int id){
 		uniqueID = id;
 	}
-=======
 	/** Returnerar händelsens identifikation.
 	 * 
 	 * @return				händelsens identifikation
 	 */
->>>>>>> refs/remotes/origin/master
 	public int getID(){
 		return uniqueID;
 	}
