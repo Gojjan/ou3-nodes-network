@@ -114,7 +114,7 @@ public class Node{
 			}
 			if(agent.getTimeToLive() > 1){
 				//måste ändra så att den (om möjligt) skickar/köar till random granne den inte varit hos
-				QueuedMessage qdMessage = new QueuedMessage(agent, position);
+				QueuedMessage qdMessage = new QueuedMessage(agent, pos);
 				sendQueue.add(qdMessage);
 			}
 		} else if (o instanceof Request){
@@ -133,9 +133,9 @@ public class Node{
 			} else {
 				request.setTimeToLive(request.getTimeToLive()-1);
 				if(request.getTimeToLive() > 1){
-					request.addPosToPathHome(position);
+					request.addPosToPathHome(pos);
 					//måste ändra så att den (om möjligt) skickar/köar till random granne den inte varit hos
-					QueuedMessage qdMessage = new QueuedMessage(request, position);
+					QueuedMessage qdMessage = new QueuedMessage(request, pos);
 					sendQueue.add(qdMessage);
 				}
 			}
