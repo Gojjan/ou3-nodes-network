@@ -7,7 +7,8 @@ import com.sun.org.apache.xalan.internal.xsltc.runtime.Hashtable;
  * <p>
  * Klassen används primärt som en fader till {@link Agent}, {@link Request} och {@link Response}.
  * 
- * @author @author Henrik Sjöström
+ * @author Viktor Bengtsson
+ * @author Henrik Sjöström
  * @version 1.0 Maj 26 2014
  */
 public class Message {
@@ -18,13 +19,12 @@ public class Message {
 	 */
 	private ShortestPath pathHome;
 	/** En tabell som håller reda på vilka noder som besökts. */
-	private Hashtable visitedNodes;
+	private Hashtable visitedNodes = new Hashtable(4099);;
 	
 	/** Skapar ett meddelande.
 	 * 
 	 */
 	public Message(){
-		visitedNodes = new Hashtable(4099);
 	}
 	
 	/** Returnerar antalets tidssteg meddelandet har kvar innan det slutar 
@@ -46,9 +46,6 @@ public class Message {
 	 * 
 	 * @return					hashtabellen med visiterade noder
 	 */
-	public Hashtable getVisitedNodes(){
-		return visitedNodes;
-	}
 	/** Bestäm hur många tidssteg meddelandet har kvar att skickas på.
 	 *  
 	 * @param x					antalet tidssteg meddelandet har kvar
@@ -68,7 +65,13 @@ public class Message {
 	 * 
 	 * @param table				hashtabellen med visiterade noder
 	 */
-	public void setVisitedNodes(Hashtable table){
-		visitedNodes = table;
+	public boolean visitedNodeI(Position pos){
+		if(visitedNodes.containsKey(pos)){
+			return true;
+		}
+		return false;
+	}
+	public void visitNodeI(Position pos){
+		visitedNodes.put(pos, 1);
 	}
 }

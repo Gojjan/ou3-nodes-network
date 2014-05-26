@@ -6,12 +6,13 @@ import com.sun.org.apache.xalan.internal.xsltc.runtime.Hashtable;
 
 /** Agent är en implementation av en agent från rumor-routing algoritmen. 
  * 
+ * @author Viktor Bengtsson
  * @author Henrik Sjöström
  * @version 1.0 Maj 26 2014
  */
 public class Agent extends Message{
 	/** Tabell med händelser. */
-	private Hashtable eventTable;
+	private Hashtable eventTable = new Hashtable();
 	/** */
 	private ArrayList<Integer> definedKeys = new ArrayList<Integer>();
 	
@@ -23,7 +24,9 @@ public class Agent extends Message{
 	 * @see 					Position
 	 */
 	public Agent(Event event, int x, Position pos){
-		
+		ShortestPath sp = new ShortestPath(pos);
+		eventTable.put(event.getID(), sp);
+		this.setTimeToLive(x);
 	}
 	
 	/** Returnerar tabellen med händelser. 
@@ -38,15 +41,18 @@ public class Agent extends Message{
 	 * @param pos
 	 * @return
 	 */
-	public Boolean visitedNode(Position pos){
-		return false;
+	public void visitNode(Position pos){
+		this.visitNodeI(pos);
+	}
+	public boolean visitedNode(Position pos){
+		return this.visitedNodeI(pos);
 	}
 	
 	/** 
 	 * 
 	 * @param al
 	 */
-	public void setDefinedKeys(ArrayList al){
+	public void setDefinedKeys(ArrayList<Integer> al){
 		definedKeys = al;
 	}
 	
@@ -54,8 +60,11 @@ public class Agent extends Message{
 	 * 
 	 * @return
 	 */
-	public ArrayList getDefinedKeys(){
+	public ArrayList<Integer> getDefinedKeys(){
 		return definedKeys;
+	}
+	public void setEventTable(Hashtable hs){
+		eventTable = hs;
 	}
 
 }

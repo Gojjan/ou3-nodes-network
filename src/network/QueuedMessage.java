@@ -18,9 +18,11 @@ public class QueuedMessage extends Message{
 			
 		} else if (o instanceof Request){
 			type = 2;
+			Request request = (Request)o;
 			
 		} else if (o instanceof Response){
 			type = 3;
+			Response response = (Response)o;
 		}
 	}
 	public int getType(){
@@ -29,5 +31,4 @@ public class QueuedMessage extends Message{
 	public Position getDestination(){
 		return destination;
 	}
-
 }

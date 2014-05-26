@@ -5,6 +5,7 @@ package network;
  *  <p>
  *  Unskiljning mellan händelser sker endast genom ett unikt id. 
  * 
+ * @author Viktor Bengtsson
  * @author Henrik Sjöström
  * @version 1.0 Maj 26 2014
  */
