@@ -6,27 +6,66 @@ import java.util.Queue;
 
 import com.sun.org.apache.xalan.internal.xsltc.runtime.Hashtable;
 
+/** Node är en klass som representerar en sensornod för att användas i en 
+ * simulering av ett nätverk. Sensor nodens beteende är likt det av en nod i 
+ * rumor-routing algoritmen. 
+ * 
+ * @author Henrik Sjöström
+ * @version 1.0 Maj 27 2014 
+ */
 public class Node{
+	/** En tabell med nodens {@link Event} objekt. */
 	private Hashtable eventTable;
+	/** En tabell med skickade {@link Message} objekt.*/
 	private Hashtable sentRequestsHT;
+	/** Kö med {@link Request} objekt. */
 	private ArrayList<Request> requests;
+	/** En flagga för om noden ska skicka {@link Request} objekt. */
 	private boolean isRepeater = false;
+	/** Berättar om noden har ett meddelande.
+	 * @see Message
+	 */
 	private boolean isHoldingMessage;
+	/** Nodes position.
+	 * @see Position
+	 */
 	private Position pos;
+	/** Lista med grannar. */
 	private ArrayList<Position> neighbours = new ArrayList<Position>();
+	/** Kö med meddelanden.
+	 * @see QueuedMessage
+	 */
 	private Queue<QueuedMessage> sendQueue;
+	/** En lista med intressanta nycklar i nodens tabell.*/
 	private ArrayList<Integer> definedKeys = new ArrayList<Integer>();
+	/** Chans att skapa ett {@link Event}. */
 	private double eventChance;
+	/** Chans att skapa en {@link Agent}. */
 	private double agentChance;
+	/** {@link Network} objektet som noden finns plaserad i. */
 	private Network network;
+	/** Lista med {@link Event} objekt. */
 	private ArrayList<Event> eventArrayList = new ArrayList<Event>();
+	/** Tidsteg kvar tills nästa gång {@link Request} objekt ska skickas. */
 	private int repeaterTime;
+<<<<<<< HEAD
 	/**Konstruktor till en nod i nätverket.
 	 * 
 	 * @param npos						position där noden placeras.
 	 * @param eventchance				chansen att ett event skapas. Sätts till 50% från main.
 	 * @param agentchance				chansen att en agent skapas. Sätts till 1% från main.
 	 * @param nnetwork					nätverk noden ligger i.
+=======
+	
+	/** Skapar en nod.
+	 * 
+	 * @param npos							nodens position
+	 * @param eventchance					nodens chans att skapa ett {@link Event}
+	 * @param agentchance					nodens chans att skapa en {@link Agent}
+	 * @param nnetwork						nätverket noden skapades i
+	 * @see Position
+	 * @see Network
+>>>>>>> refs/remotes/origin/master
 	 */
 	public Node(Position npos, double eventchance, double agentchance, Network nnetwork){
 		pos = npos;
@@ -36,6 +75,11 @@ public class Node{
 		sendQueue = new LinkedList<QueuedMessage>();
 		eventTable = new Hashtable();
 	}
+	
+	/**
+	 * 
+	 * @param o
+	 */
 	public void receiveMessage(Object o){
 		if(o instanceof QueuedMessage){
 			QueuedMessage qd = (QueuedMessage) o;
@@ -90,6 +134,20 @@ public class Node{
 				if(agent.getTimeToLive() > 1){
 					agent.setEventTable(agentTable);
 					//måste ändra så att den (om möjligt) skickar/köar till random granne den inte varit hos
+					ArrayList<Position> newNeighbours = randomizeOrder();
+					Position nextpos = null;
+					boolean foundDestination = false;
+					int i = 0;
+					while(!foundDestination && i < newNeighbours.size()){
+						if(!agent.visitedNodeI(newNeighbours.get(i))){
+							foundDestination = true;
+							nextpos = newNeighbours.get(i);
+						}
+						i++;
+					}
+					if(nextpos == null){
+						nextpos = newNeighbours.get(0);
+					}
 					QueuedMessage qdMessage = new QueuedMessage(agent, pos);
 					sendQueue.add(qdMessage);
 				}
@@ -118,7 +176,20 @@ public class Node{
 					if(request.getTimeToLive() > 1){
 						request.addPosToPathHome(pos);
 						//måste ändra så att den (om möjligt) skickar/köar till random granne den inte varit hos
-						QueuedMessage qdMessage = new QueuedMessage(request, pos);
+						ArrayList<Position> newNeighbours = randomizeOrder();
+						boolean foundDestination = false;
+						int i = 0;
+						while(!foundDestination && i < newNeighbours.size()){
+							if(!request.visitedNodeI(newNeighbours.get(i))){
+								foundDestination = true;
+								nextpos = newNeighbours.get(i);
+							}
+							i++;
+						}
+						if(nextpos == null){
+							nextpos = newNeighbours.get(0);
+						}
+						QueuedMessage qdMessage = new QueuedMessage(request, nextpos);
 						sendQueue.add(qdMessage);
 					}
 				} else {
@@ -141,20 +212,22 @@ public class Node{
 			}
 		}
 	}
+	/** Noden tar ett tidssteg. */
 	public void timeTick(){
 		if(neighbours.isEmpty()){
 			neighbours = network.checkNeighbours(pos);
 		}
 		if(isRepeater){
-			//System.out.println("Node ["+pos.getX()+","+pos.getY()+"] is a repeater");
-			
 			//lower time by all sent requests by 1
 			for(int i = 0; i < requests.size(); i++){
-				
+				sentRequestsHT.put(requests.get(i), (int) sentRequestsHT.get(requests.get(i))-1);
+				if((int)sentRequestsHT.get(requests.get(i)) == 0){
+					Request request = requests.get(i);
+					QueuedMessage qdm = new QueuedMessage(request,pos);
+					sendQueue.add(qdm);
+					sentRequestsHT.remove(requests.get(i));
+				}
 			}
-			//check if some event hasn't returned a response 
-			//check if it's time to send
-			//create request
 			if(repeaterTime == 0){
 				repeaterTime = 400;
 				Position nextpos = null;
@@ -178,6 +251,7 @@ public class Node{
 				QueuedMessage qdm = new QueuedMessage(request, nextpos);
 				if(!lucky){
 					sendQueue.add(qdm);
+					sentRequestsHT.put(request,8*network.getRequestTimeToLive());
 				} else {
 					for(int i = 0; i < eventArrayList.size(); i++){
 						Event event = (Event) eventArrayList.get(i);
@@ -196,13 +270,10 @@ public class Node{
 			eventArrayList.add(event);
 			ShortestPath sp = new ShortestPath(pos);
 			eventTable.put(event.getID(), sp);
-			
 			if(Math.random() <= agentChance){
 				Agent agent = new Agent(event, network.getAgentTimeToLive(), pos);
 				Position nextpos = (Position) neighbours.get((int) Math.random()*(neighbours.size()-1));
-				//create agent
-				//add agent to sendqueue
-				QueuedMessage qdm = new QueuedMessage(agent, pos);
+				QueuedMessage qdm = new QueuedMessage(agent, nextpos);
 				sendQueue.add(qdm);
 			}
 		}
@@ -211,24 +282,66 @@ public class Node{
 			sendMessage(qdm);
 		}
 	}
+	
+	/** Skickar ett {@link Message} objekt. */
 	public boolean sendMessage(QueuedMessage qdm){
 		Position posa = qdm.getDestination();
 		network.GetNodeAtPosition(posa).receiveMessage(qdm);
 		return true;
 	}
+	/** Returnerar om noden har ett meddelande.
+	 * 
+	 * @return								nodens meddelande
+	 */
 	public boolean getIsHoldingMessage(){
 		return isHoldingMessage;
 	}
+	/** Returnerar nodens position.
+	 * 
+	 * @return								nodens position
+	 * @see Position
+	 */
 	public Position getPosition(){
 		return pos;
 	}
+	/** Flagga att noden skapar {@link Request} objekt. */
 	public void setRepeater(){
 		isRepeater = true;
 		requests = new ArrayList<Request>();
 		sentRequestsHT = new Hashtable();
 		repeaterTime = 400;
 	}
+	/** Returnerar om noden skapar {@link Request} objekt.
+	 * 
+	 * @return								om noden skapar {@link Request} 
+	 * 										objekt elelr ej
+	 */
 	public boolean getRepeater(){
 		return isRepeater;
+	}
+	private ArrayList<Position> randomizeOrder(){
+		ArrayList<Position> reOrdered = new ArrayList<Position>();
+		ArrayList<Integer> defined = new ArrayList<Integer>();
+		boolean matched = false;
+		for(int i = 0; i < neighbours.size(); i++){
+			matched = false;
+			while(!matched){
+				int randomPosIndex = (int) (Math.random()*neighbours.size());
+				boolean unDefined = true;
+				for(int j = 0; j < defined.size(); j++){
+					if(randomPosIndex == defined.get(j)){
+						unDefined = false;
+					}
+				}
+				if(unDefined == true){
+					Position pos2 = neighbours.get(randomPosIndex);
+					reOrdered.add(pos2);
+					defined.add(randomPosIndex);
+					matched = true;
+				}
+			}
+		}
+		
+		return reOrdered;
 	}
 }
