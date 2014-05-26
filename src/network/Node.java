@@ -190,14 +190,10 @@ public class Node{
 			eventArrayList.add(event);
 			ShortestPath sp = new ShortestPath(pos);
 			eventTable.put(event.getID(), sp);
-			
 			if(Math.random() <= agentChance){
 				Agent agent = new Agent(event, network.getAgentTimeToLive(), pos);
 				Position nextpos = (Position) neighbours.get((int) Math.random()*(neighbours.size()-1));
-				//create agent
-				//add agent to sendqueue
-				
-				QueuedMessage qdm = new QueuedMessage(agent, pos);
+				QueuedMessage qdm = new QueuedMessage(agent, nextpos);
 				sendQueue.add(qdm);
 			}
 		}
@@ -226,7 +222,7 @@ public class Node{
 	public boolean getRepeater(){
 		return isRepeater;
 	}
-	private ArrayList randomizeOrder(){
+	private ArrayList<Position> randomizeOrder(){
 		ArrayList<Position> reOrdered = new ArrayList<Position>();
 		ArrayList<Integer> defined = new ArrayList<Integer>();
 		boolean matched = false;
