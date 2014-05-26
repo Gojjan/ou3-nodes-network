@@ -46,6 +46,9 @@ public class Message {
 	 * 
 	 * @return					hashtabellen med visiterade noder
 	 */
+	public Hashtable getVisitedNodes(){
+		return visitedNodes;
+	}
 	/** Bestäm hur många tidssteg meddelandet har kvar att skickas på.
 	 *  
 	 * @param x					antalet tidssteg meddelandet har kvar
