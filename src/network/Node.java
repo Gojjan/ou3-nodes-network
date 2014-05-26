@@ -184,8 +184,16 @@ public class Node{
 						sendQueue.add(qdMessage);
 					}
 				} else {
-					
-					//create Response
+					Event event = null;
+					for (int x = 0; x < eventArrayList.size();x++){
+						if (request.getTargetId() == eventArrayList.get(x).getID()){
+							event = eventArrayList.get(x);
+						}
+					}if (event != null){
+						Response response = new Response(request.getPathHome(),event, pos);
+						QueuedMessage qdMessage = new QueuedMessage(response, response.getNextPostion());
+						sendQueue.add(qdMessage);
+					}
 				}
 			} else if (qd.getType() == 3){
 				Response response = (Response) o;
