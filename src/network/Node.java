@@ -209,15 +209,16 @@ public class Node{
 			neighbours = network.checkNeighbours(pos);
 		}
 		if(isRepeater){
-			//System.out.println("Node ["+pos.getX()+","+pos.getY()+"] is a repeater");
-			
 			//lower time by all sent requests by 1
 			for(int i = 0; i < requests.size(); i++){
-				
+				sentRequestsHT.put(requests.get(i), (int) sentRequestsHT.get(requests.get(i))-1);
+				if((int)sentRequestsHT.get(requests.get(i)) == 0){
+					Request request = requests.get(i);
+					QueuedMessage qdm = new QueuedMessage(request,pos);
+					sendQueue.add(qdm);
+					sentRequestsHT.remove(requests.get(i));
+				}
 			}
-			//check if some event hasn't returned a response 
-			//check if it's time to send
-			//create request
 			if(repeaterTime == 0){
 				repeaterTime = 400;
 				Position nextpos = null;
@@ -241,6 +242,7 @@ public class Node{
 				QueuedMessage qdm = new QueuedMessage(request, nextpos);
 				if(!lucky){
 					sendQueue.add(qdm);
+					sentRequestsHT.put(request,8*network.getRequestTimeToLive());
 				} else {
 					for(int i = 0; i < eventArrayList.size(); i++){
 						Event event = (Event) eventArrayList.get(i);
