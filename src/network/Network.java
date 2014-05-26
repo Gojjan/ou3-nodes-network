@@ -9,8 +9,12 @@ public class Network {
 	private int lastSentID = 0;
 	private int x;
 	private int y;
+	private int agentTimeToLive;
+	private int requestTimeToLive;
+	private int searchedRequests;
 	
-	public Network (int nx, int ny, double eventChance, double agentChance){
+	
+	public Network (int nx, int ny, double eventChance, double agentChance, int aTTL, int rTTL){
 		x = nx;
 		y = ny;
 		for(int i = 0; i < x; i++){
@@ -19,10 +23,29 @@ public class Network {
 				nodeArray.get(i).add(new Node(new Position(i, j), eventChance, agentChance, this));
 			}
 		}
+		int repeatersNotCreated = 4;
+		while(repeatersNotCreated != 0){
+			for(int i = 0; i < x; i++){
+				for(int j = 0; j < y; j++){
+					if(Math.random()<0.01 && repeatersNotCreated != 0 && nodeArray.get(i).get(j).getRepeater() != true){
+						nodeArray.get(i).get(j).setRepeater();
+						System.out.println("repeater created");
+						repeatersNotCreated--;
+					}
+				}
+			}
+		}
+		agentTimeToLive = aTTL;
+		requestTimeToLive = rTTL;
+	}
+	public int getAgentTimeToLive(){
+		return agentTimeToLive;
+	}
+	public int getRequestTimeToLive(){
+		return requestTimeToLive;
 	}
 	public void timeTick(){
 		for(int i = 0; i < x; i++){
-			nodeArray.add(i, new ArrayList<Node>());
 			for(int j = 0; j < y; j++){
 				nodeArray.get(i).get(j).timeTick();
 			}
@@ -72,5 +95,8 @@ public class Network {
 	public int getTime(){
 		return currentTime;
 	}
-	
+	public int getRequestID(){
+		searchedRequests++;
+		return searchedRequests%4;
+	}
 }
