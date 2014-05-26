@@ -9,12 +9,11 @@ import com.sun.org.apache.xalan.internal.xsltc.runtime.Hashtable;
 public class Node{
 	private Hashtable eventTable;
 	private Hashtable sentRequestsHT;
-	private ArrayList requests;
-	private ArrayList events;
+	private ArrayList<Request> requests;
 	private boolean isRepeater = false;
 	private boolean isHoldingMessage;
 	private Position pos;
-	private ArrayList neighbours = new ArrayList();
+	private ArrayList<Position> neighbours = new ArrayList<Position>();
 	private Queue<QueuedMessage> sendQueue;
 	private Position position;
 	private ArrayList<Integer> definedKeys = new ArrayList<Integer>();
@@ -31,7 +30,6 @@ public class Node{
 		network = nnetwork;
 		sendQueue = new LinkedList<QueuedMessage>();
 		eventTable = new Hashtable();
-		events = new ArrayList();
 	}
 	public void receiveMessage(Object o){
 		if(o instanceof QueuedMessage){
@@ -93,7 +91,7 @@ public class Node{
 			} else if (qd.getType() == 2){
 				//Någonstans måste det läggas till så att den kollar om distance till eventet är noll från denna nod och då göra en response.
 				Request request = (Request) o;
-				Position nextpos;
+				Position nextpos = null;
 				boolean isOnTrack = false;
 				boolean foundEvent = false;
 				for(int i = 0; i < definedKeys.size(); i++){
@@ -108,7 +106,7 @@ public class Node{
 				if(isOnTrack){
 					ShortestPath sp = (ShortestPath) eventTable.get(request.getTargetId());
 					nextpos = sp.getNextDirection();
-					QueuedMessage qdMessage = new QueuedMessage(request, position);
+					QueuedMessage qdMessage = new QueuedMessage(request, nextpos);
 					sendQueue.add(qdMessage);
 				} else if (foundEvent != true){
 					request.setTimeToLive(request.getTimeToLive()-1);
@@ -176,8 +174,8 @@ public class Node{
 				if(!lucky){
 					sendQueue.add(qdm);
 				} else {
-					for(int i = 0; i < events.size(); i++){
-						Event event = (Event) events.get(i);
+					for(int i = 0; i < eventArrayList.size(); i++){
+						Event event = (Event) eventArrayList.get(i);
 						if(event.getID() == requestID){
 							System.out.println("Event id: "+requestID+", event date of birth: "
 									+event.getDateOfBirth()+", event place of birth: ["+pos.getX()+","+pos.getY()+"]\n");
@@ -190,7 +188,7 @@ public class Node{
 		}
 		if(Math.random() <= eventChance){
 			Event event = new Event(network.createUniqueID(),pos,network.getTime());
-			events.add(event);
+			eventArrayList.add(event);
 			ShortestPath sp = new ShortestPath(pos);
 			eventTable.put(event.getID(), sp);
 			
@@ -198,6 +196,8 @@ public class Node{
 				Agent agent = new Agent(event, network.getAgentTimeToLive(), pos);
 				//create agent
 				//add agent to sendqueue
+				QueuedMessage qdm = new QueuedMessage(agent, pos);
+				sendQueue.add(qdm);
 			}
 		}
 		if(sendQueue.poll() != null){
@@ -218,7 +218,7 @@ public class Node{
 	}
 	public void setRepeater(){
 		isRepeater = true;
-		requests = new ArrayList();
+		requests = new ArrayList<Request>();
 		sentRequestsHT = new Hashtable();
 		repeaterTime = 400;
 	}
