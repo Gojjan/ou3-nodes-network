@@ -140,6 +140,7 @@ public class Node{
 					sendQueue.add(qdMessage);
 				}
 			} else if (qd.getType() == 2){
+				
 				//Någonstans måste det läggas till så att den kollar om distance till eventet är noll från denna nod och då göra en response.
 				
 				Request request = qd.getRequest();
@@ -196,6 +197,7 @@ public class Node{
 					}
 				}
 			} else if (qd.getType() == 3){
+				System.out.println("Some node recieved a response");
 				Response response = qd.getResponse();
 				response.popNextPosition();
 				if(response.getIsHome()){
@@ -288,9 +290,11 @@ public class Node{
 			QueuedMessage qdm = sendQueue.poll();
 			Position pos2 = qdm.getDestination();
 			if(!network.GetNodeAtPosition(pos2).getIsHoldingMessage()){
-				if(isRepeater){
-					System.out.println(qdm.getType());
-				}
+				/*if(isRepeater && qdm.getType() == 2){
+					System.out.println("Repeater sent request");
+				} else if(qdm.getType() == 2){
+					System.out.println("Non-repeater sent request");
+				}*/
 				sendMessage(qdm);
 			} else {
 				sendQueue.add(qdm);

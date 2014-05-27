@@ -51,7 +51,6 @@ public class Network {
 				for(int j = 0; j < y; j++){
 					if(Math.random()<0.01 && repeatersNotCreated != 0 && nodeArray.get(i).get(j).getRepeater() != true){
 						nodeArray.get(i).get(j).setRepeater();
-						System.out.println("repeater created");
 						repeatersNotCreated--;
 					}
 				}
