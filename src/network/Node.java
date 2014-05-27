@@ -140,6 +140,7 @@ public class Node{
 					sendQueue.add(qdMessage);
 				}
 			} else if (qd.getType() == 2){
+				System.out.println("Request send");
 				//Någonstans måste det läggas till så att den kollar om distance till eventet är noll från denna nod och då göra en response.
 				Request request = qd.getRequest();
 				Position nextpos = null;
@@ -181,6 +182,7 @@ public class Node{
 						sendQueue.add(qdMessage);
 					}
 				} else {
+					System.out.println("Response");
 					Event event = null;
 					for (int x = 0; x < eventArrayList.size();x++){
 						if (request.getTargetId() == eventArrayList.get(x).getID()){
