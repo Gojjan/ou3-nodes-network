@@ -2,6 +2,7 @@ package network;
 
 /** Position är en klass som representerar en position på ett två dimentionellt plan.
  * 
+ * @author Ludvig Lindkvist
  * @author Henrik Sjöström
  * @version 1.0 Maj 26 2014
  */
@@ -38,65 +39,97 @@ public class Position {
 	 * 
 	 * @return							den sökta positionen
 	 */
-	public Position getPosToEast(){
-		Position pos = new Position(x+1,y);
-		return  pos;
+	public Position getPosToEast(int dx, int dy){
+		if(x+1 < dx){
+			Position pos = new Position(x+1,y);
+			return  pos;
+		}else{
+			return null;
+		}
 	}
 	/** Returnerar positionen 1 steg åt väst.
 	 * 
 	 * @return							den sökta positionen
 	 */
-	public Position getPosToWest(){
-		Position pos = new Position(x-1,y);
-		return  pos;
+	public Position getPosToWest(int dx, int dy){
+		if (x-1 >= 0){
+			Position pos = new Position(x-1,y);
+			return  pos;
+		}else{
+			return null;
+		}
 	} 
 	/** Returnerar positionen 1 steg åt norr.
 	 * 
 	 * @return							den sökta positionen
 	 */
-	public Position getPosToNorth(){
-		Position pos = new Position(x,y-1);
-		return pos;
+	public Position getPosToNorth(int dx, int dy){
+		if(y-1 >= 0){
+			Position pos = new Position(x,y-1);
+			return pos;
+		}else{
+			return null;
+		}
 	}
 	/** Returnerar positionen 1 steg åt söder.
 	 * 
 	 * @return							den sökta positionen
 	 */
-	public Position getPosToSouth(){
+	public Position getPosToSouth(int dx, int dy){
+		if(y+1 < dy){
 		Position pos = new Position(x,y+1);
 		return pos;
+		}else{
+			return null;
+		}
 	}
 	/** Returnerar positionen 1 steg åt nordöst.
 	 * 
 	 * @return							den sökta positionen
 	 */
-	public Position getPosToNorthEast(){
-		Position pos = new Position(x+1,y-1);
-		return pos;
+	public Position getPosToNorthEast(int dx, int dy){
+		if(x+1 < dx && y-1 >= 0){
+			Position pos = new Position(x+1,y-1);
+			return pos;
+		}else{
+			return null;
+		}
 	}
 	/** Returnerar positionen 1 steg åt nordväst.
 	 * 
 	 * @return							den sökta positionen
 	 */
-	public Position getPosToNorthWest(){
-		Position pos = new Position(x-1,y-1);
-		return pos;
+	public Position getPosToNorthWest(int dx, int dy){
+		if(x-1 >= 0 && y-1 >= 0){
+			Position pos = new Position(x-1,y-1);
+			return pos;
+		}else{
+			return null;
+		}
 	}
 	/** Returnerar positionen 1 steg åt sydöst.
 	 * 
 	 * @return							den sökta positionen
 	 */
-	public Position getPosToSouthEast(){
-		Position pos = new Position(x+1,y+1);
-		return pos;
+	public Position getPosToSouthEast(int dx, int dy){
+		if(x+1 < dx && y+1 < dy){
+			Position pos = new Position(x+1,y+1);
+			return pos;
+		}else{
+			return null;
+		}
 	}
 	/** Returnerar positionen 1 steg åt sydväst.
 	 * 
 	 * @return							den sökta positionen
 	 */
-	public Position getPosToSouthWest(){
-		Position pos = new Position(x-1,y+1);
-		return pos;
+	public Position getPosToSouthWest(int dx, int dy){
+		if(x-1 >= 0 && y+1 < dy){
+			Position pos = new Position(x-1,y+1);
+			return pos;
+		}else{
+			return null;
+		}
 	}
 	/** Avgör om två positioner är identiska.
 	 * 
