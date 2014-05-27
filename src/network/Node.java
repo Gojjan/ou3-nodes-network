@@ -75,8 +75,14 @@ public class Node{
 				agent.setTimeToLive(agent.getTimeToLive()-1);
 				Hashtable agentTable = agent.getEventTable();
 				ArrayList<Integer> agentKeys = agent.getDefinedKeys();
-				for(int i = 0; i < agentKeys.size(); i++){
+				for(int i = 0; i < agentTable.size(); i++){
+					int wat = agentKeys.size();
+					int wat2 = agentTable.size();					
 					ShortestPath sp0 = (ShortestPath) agentTable.get(agentKeys.get(i));
+					Object p = agentTable.get(agentKeys.get(i));
+					if(p instanceof ShortestPath){
+						System.out.println("p is ShortestPath");
+					}
 					sp0.addDirection(pos);
 					agentTable.put(agentKeys.get(i), sp0);
 					boolean defined = false;
@@ -96,6 +102,7 @@ public class Node{
 					}
 					if(!defined){
 						eventTable.put(agentKeys.get(i), sp0);
+						definedKeys.add(agentKeys.get(i));
 					}
 				}
 				for(int i = 0; i < definedKeys.size(); i++){
@@ -116,11 +123,13 @@ public class Node{
 					}
 					if(!defined){
 						agentTable.put(definedKeys.get(i), eventTable.get(definedKeys.get(i)));
+						agentKeys.add(definedKeys.get(i));
 					}
 				}
 				if(agent.getTimeToLive() > 1){
 					agent.setEventTable(agentTable);
-					//måste ändra så att den (om möjligt) skickar/köar till random granne den inte varit hos
+					agent.setDefinedKeys(agentKeys);
+					definedKeys.addAll(agent.getDefinedKeys());
 					ArrayList<Position> newNeighbours = randomizeOrder();
 					Position nextpos = null;
 					boolean foundDestination = false;
@@ -140,7 +149,7 @@ public class Node{
 					sendQueue.add(qdMessage);
 				}
 			} else if (qd.getType() == 2){
-				System.out.println("asd");
+				System.out.println("Request send");
 				//Någonstans måste det läggas till så att den kollar om distance till eventet är noll från denna nod och då göra en response.
 				
 				Request request = qd.getRequest();
@@ -151,20 +160,19 @@ public class Node{
 					if(definedKeys.get(i) == request.getTargetId()){
 						isOnTrack = true;
 						ShortestPath sp =  (ShortestPath) eventTable.get(definedKeys.get(i));
-						System.out.println(sp.getDistance());
 						if(sp.getDistance() == 0){
 							foundEvent = true;
 						}
 					}
 				}
 				if(isOnTrack){
-					System.out.println("asd");
+					System.out.println("isOnTrack");
 					ShortestPath sp = (ShortestPath) eventTable.get(request.getTargetId());
 					nextpos = sp.getNextDirection();
 					QueuedMessage qdMessage = new QueuedMessage(request, nextpos);
 					sendQueue.add(qdMessage);
 				} else if (foundEvent != true){
-					
+					System.out.println("foundEvent !=true");
 					request.setTimeToLive(request.getTimeToLive()-1);
 					if(request.getTimeToLive() > 1){
 						request.addPosToPathHome(pos);
@@ -186,7 +194,7 @@ public class Node{
 						sendQueue.add(qdMessage);
 					}
 				} else {
-					System.out.println("wat");
+					System.out.println("Response");
 					Event event = null;
 					for (int x = 0; x < eventArrayList.size();x++){
 						if (request.getTargetId() == eventArrayList.get(x).getID()){
@@ -200,7 +208,7 @@ public class Node{
 					}
 				}
 			} else if (qd.getType() == 3){
-				
+				System.out.println("Some node recieved a response");
 				Response response = qd.getResponse();
 				response.popNextPosition();
 				if(response.getIsHome()){
@@ -281,8 +289,10 @@ public class Node{
 			eventArrayList.add(event);
 			ShortestPath sp = new ShortestPath(pos);
 			eventTable.put(event.getID(), sp);
+			definedKeys.add(event.getID());
 			if(Math.random() <= agentChance){
 				Agent agent = new Agent(event, network.getAgentTimeToLive(), pos);
+					agent.setDefinedKeys(definedKeys);
 				Position nextpos = (Position) neighbours.get((int) Math.random()*(neighbours.size()-1));
 				QueuedMessage qdm = new QueuedMessage(agent, nextpos);
 				sendQueue.add(qdm);
