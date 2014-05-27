@@ -17,48 +17,38 @@ public class QueuedMessage extends Message{
 	 */
 	private int type;
 	/** Meddelandets destination
-	 * @see Position
+	 * @see {@link Position}
 	 */
 	private Position destination;
-	/** Tabell med visiterade noder */
-	private Hashtable visitedNodes;
-	/** Tabell med meddelandets event */
-	private Hashtable eventTable;
-	/** Arraylist med 	 */
-	private ArrayList<Integer> definedKeys = new ArrayList<Integer>();
-	/** Det funna {@link Event} objektet.
-	 * @see Response
-	 */
-	private Event foundEvent;
-	/** Identifikationen på {@link Event} objektet som söks. */
-	private int targetId;
 	/** Skapar ett QueuedMessage av ett annat {@link Message} objekt.
 	 * 
 	 * @param o							meddelandet som omvandlas
 	 * @param pos						meddelandets position
 	 * @see Position
 	 */
+	private Agent agent;
+	private Request request;
+	private Response response;
 	public QueuedMessage(Object o, Position pos){
 		if(o instanceof Agent){
 			type = 1;
-			Agent agent = (Agent)o;
-			definedKeys = agent.getDefinedKeys();
-			eventTable = agent.getEventTable();
+			agent = (Agent)o;
 		} else if (o instanceof Request){
 			type = 2;
-			Request request = (Request)o;
-			timeToLive = request.getTimeToLive();
-			pathHome = request.getPathHome();
-			visitedNodes = request.getVisitedNodes();
-			targetId = request.getTargetId();
+			request = (Request)o;
 		} else if (o instanceof Response){
 			type = 3;
-			Response response = (Response)o;
-			timeToLive = response.getTimeToLive();
-			pathHome = response.getPathHome();
-			visitedNodes = response.getVisitedNodes();
-			foundEvent = response.getEvent();
+			response = (Response)o;
 		}
+	}
+	public Agent getAgent(){
+		   return agent;
+	}
+	public Request getRequest(){
+		   return request;
+	}
+	public Response getResponse(){
+		   return response;
 	}
 	/** Returnerar meddelandets typ
 	 * 		1 = {@link Agent}
