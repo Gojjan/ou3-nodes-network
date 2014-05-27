@@ -22,10 +22,6 @@ public class Node{
 	private ArrayList<Request> requests;
 	/** En flagga för om noden ska skicka {@link Request} objekt. */
 	private boolean isRepeater = false;
-	/** Berättar om noden har ett meddelande.
-	 * @see Message
-	 */
-	private boolean isHoldingMessage;
 	/** Nodes position.
 	 * @see Position
 	 */
@@ -266,6 +262,7 @@ public class Node{
 			repeaterTime--;
 		}
 		if(Math.random() <= eventChance){
+			
 			Event event = new Event(network.createUniqueID(),pos,network.getTime());
 			eventArrayList.add(event);
 			ShortestPath sp = new ShortestPath(pos);
@@ -279,7 +276,12 @@ public class Node{
 		}
 		if(sendQueue.peek() != null){
 			QueuedMessage qdm = sendQueue.poll();
-			sendMessage(qdm);
+			Position pos2 = qdm.getDestination();
+			if(!network.GetNodeAtPosition(pos2).getIsHoldingMessage()){
+				sendMessage(qdm);
+			} else {
+				sendQueue.add(qdm);
+			}
 		}
 	}
 	
@@ -294,7 +296,11 @@ public class Node{
 	 * @return								nodens meddelande
 	 */
 	public boolean getIsHoldingMessage(){
-		return isHoldingMessage;
+		if(sendQueue.peek() == null){
+			return false;
+		} else {
+			return true;
+		}
 	}
 	/** Returnerar nodens position.
 	 * 
