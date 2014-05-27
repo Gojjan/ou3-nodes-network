@@ -19,7 +19,7 @@ public class Message {
 	 */
 	private ShortestPath pathHome;
 	/** En tabell som håller reda på vilka noder som besökts. */
-	private Hashtable visitedNodes = new Hashtable(4099);;
+	private Hashtable visitedNodes = new Hashtable();
 	
 	/** Skapar ett meddelande.
 	 * 
