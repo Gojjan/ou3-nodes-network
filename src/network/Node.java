@@ -48,24 +48,12 @@ public class Node{
 	private ArrayList<Event> eventArrayList = new ArrayList<Event>();
 	/** Tidsteg kvar tills nästa gång {@link Request} objekt ska skickas. */
 	private int repeaterTime;
-<<<<<<< HEAD
 	/**Konstruktor till en nod i nätverket.
 	 * 
 	 * @param npos						position där noden placeras.
 	 * @param eventchance				chansen att ett event skapas. Sätts till 50% från main.
 	 * @param agentchance				chansen att en agent skapas. Sätts till 1% från main.
 	 * @param nnetwork					nätverk noden ligger i.
-=======
-	
-	/** Skapar en nod.
-	 * 
-	 * @param npos							nodens position
-	 * @param eventchance					nodens chans att skapa ett {@link Event}
-	 * @param agentchance					nodens chans att skapa en {@link Agent}
-	 * @param nnetwork						nätverket noden skapades i
-	 * @see Position
-	 * @see Network
->>>>>>> refs/remotes/origin/master
 	 */
 	public Node(Position npos, double eventchance, double agentchance, Network nnetwork){
 		pos = npos;
@@ -84,7 +72,7 @@ public class Node{
 		if(o instanceof QueuedMessage){
 			QueuedMessage qd = (QueuedMessage) o;
 			if(qd.getType() == 1){
-				Agent agent = (Agent)o;
+				Agent agent = qd.getAgent();
 				agent.setTimeToLive(agent.getTimeToLive()-1);
 				Hashtable agentTable = agent.getEventTable();
 				ArrayList<Integer> agentKeys = agent.getDefinedKeys();
@@ -153,7 +141,7 @@ public class Node{
 				}
 			} else if (qd.getType() == 2){
 				//Någonstans måste det läggas till så att den kollar om distance till eventet är noll från denna nod och då göra en response.
-				Request request = (Request) o;
+				Request request = qd.getRequest();
 				Position nextpos = null;
 				boolean isOnTrack = false;
 				boolean foundEvent = false;
@@ -197,7 +185,7 @@ public class Node{
 					//create Response
 				}
 			} else if (qd.getType() == 3){
-				Response response = (Response) o;
+				Response response = qd.getResponse();
 				response.popNextPosition();
 				if(response.getIsHome()){
 					Event responseEvent = response.getEvent();
@@ -277,8 +265,9 @@ public class Node{
 				sendQueue.add(qdm);
 			}
 		}
-		if(sendQueue.poll() != null){
-			QueuedMessage qdm = sendQueue.remove();
+		if(sendQueue.peek() != null){
+			System.out.println(sendQueue.peek());
+			QueuedMessage qdm = sendQueue.poll();
 			sendMessage(qdm);
 		}
 	}
