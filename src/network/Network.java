@@ -95,30 +95,22 @@ public class Network {
 	 */
 	public ArrayList<Position> checkNeighbours(Position pos){
 		ArrayList<Position> neighbours = new ArrayList<Position>();
-		try{
-			neighbours.add(pos.getPosToNorth());
-		}catch (IndexOutOfBoundsException e){}
-		try{
-			neighbours.add(pos.getPosToNorthEast());
-		}catch (IndexOutOfBoundsException e){}
-		try{
-			neighbours.add(pos.getPosToEast());
-		}catch (IndexOutOfBoundsException e){}
-		try{
-			neighbours.add(pos.getPosToSouthEast());
-		}catch (IndexOutOfBoundsException e){}
-		try{
-			neighbours.add(pos.getPosToSouth());
-		}catch (IndexOutOfBoundsException e){}
-		try{
-			neighbours.add(pos.getPosToSouthWest());
-		}catch (IndexOutOfBoundsException e){}
-		try{
-			neighbours.add(pos.getPosToWest());
-		}catch (IndexOutOfBoundsException e){}
-		try{
-			neighbours.add(pos.getPosToNorthWest());
-		}catch (IndexOutOfBoundsException e){}
+		if(pos.getPosToNorth(x, y) != null)
+			neighbours.add(pos.getPosToNorth(x, y));
+		if(pos.getPosToNorthEast(x, y) != null)
+			neighbours.add(pos.getPosToNorthEast(x, y));
+		if(pos.getPosToEast(x, y) != null)
+			neighbours.add(pos.getPosToEast(x, y));
+		if(pos.getPosToSouthEast(x, y) != null)
+			neighbours.add(pos.getPosToSouthEast(x, y));
+		if(pos.getPosToSouth(x, y) != null)
+			neighbours.add(pos.getPosToSouth(x, y));
+		if(pos.getPosToSouthWest(x, y) != null)
+			neighbours.add(pos.getPosToSouthWest(x, y));
+		if(pos.getPosToWest(x, y) != null)
+			neighbours.add(pos.getPosToWest(x, y));
+		if(pos.getPosToNorthWest(x, y) != null)
+			neighbours.add(pos.getPosToNorthWest(x, y));
 		
 		return neighbours;
 	}
