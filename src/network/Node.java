@@ -136,7 +136,7 @@ public class Node{
 						System.out.println(newNeighbours.size());
 						nextpos = newNeighbours.get(0);
 					}
-					QueuedMessage qdMessage = new QueuedMessage(agent, pos);
+					QueuedMessage qdMessage = new QueuedMessage(agent, nextpos);
 					sendQueue.add(qdMessage);
 				}
 			} else if (qd.getType() == 2){
@@ -288,6 +288,7 @@ public class Node{
 	/** Skickar ett {@link Message} objekt. */
 	public boolean sendMessage(QueuedMessage qdm){
 		Position posa = qdm.getDestination();
+		//System.out.println("Node at: "+pos.getX()+","+pos.getY()+" sent message to: "+posa.getX()+","+posa.getY());
 		network.GetNodeAtPosition(posa).receiveMessage(qdm);
 		return true;
 	}
