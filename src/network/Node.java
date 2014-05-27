@@ -48,15 +48,12 @@ public class Node{
 	private ArrayList<Event> eventArrayList = new ArrayList<Event>();
 	/** Tidsteg kvar tills nästa gång {@link Request} objekt ska skickas. */
 	private int repeaterTime;
-	
-	/** Skapar en nod.
+	/**Konstruktor till en nod i nätverket.
 	 * 
-	 * @param npos							nodens position
-	 * @param eventchance					nodens chans att skapa ett {@link Event}
-	 * @param agentchance					nodens chans att skapa en {@link Agent}
-	 * @param nnetwork						nätverket noden skapades i
-	 * @see Position
-	 * @see Network
+	 * @param npos						position där noden placeras.
+	 * @param eventchance				chansen att ett event skapas. Sätts till 50% från main.
+	 * @param agentchance				chansen att en agent skapas. Sätts till 1% från main.
+	 * @param nnetwork					nätverk noden ligger i.
 	 */
 	public Node(Position npos, double eventchance, double agentchance, Network nnetwork){
 		pos = npos;
@@ -75,7 +72,7 @@ public class Node{
 		if(o instanceof QueuedMessage){
 			QueuedMessage qd = (QueuedMessage) o;
 			if(qd.getType() == 1){
-				Agent agent = (Agent)o;
+				Agent agent = qd.getAgent();
 				agent.setTimeToLive(agent.getTimeToLive()-1);
 				Hashtable agentTable = agent.getEventTable();
 				ArrayList<Integer> agentKeys = agent.getDefinedKeys();
@@ -144,7 +141,7 @@ public class Node{
 				}
 			} else if (qd.getType() == 2){
 				//Någonstans måste det läggas till så att den kollar om distance till eventet är noll från denna nod och då göra en response.
-				Request request = (Request) o;
+				Request request = qd.getRequest();
 				Position nextpos = null;
 				boolean isOnTrack = false;
 				boolean foundEvent = false;
@@ -196,7 +193,7 @@ public class Node{
 					}
 				}
 			} else if (qd.getType() == 3){
-				Response response = (Response) o;
+				Response response = qd.getResponse();
 				response.popNextPosition();
 				if(response.getIsHome()){
 					Event responseEvent = response.getEvent();
@@ -217,15 +214,16 @@ public class Node{
 			neighbours = network.checkNeighbours(pos);
 		}
 		if(isRepeater){
-			//System.out.println("Node ["+pos.getX()+","+pos.getY()+"] is a repeater");
-			
 			//lower time by all sent requests by 1
 			for(int i = 0; i < requests.size(); i++){
-				
+				sentRequestsHT.put(requests.get(i), (int) sentRequestsHT.get(requests.get(i))-1);
+				if((int)sentRequestsHT.get(requests.get(i)) == 0){
+					Request request = requests.get(i);
+					QueuedMessage qdm = new QueuedMessage(request,pos);
+					sendQueue.add(qdm);
+					sentRequestsHT.remove(requests.get(i));
+				}
 			}
-			//check if some event hasn't returned a response 
-			//check if it's time to send
-			//create request
 			if(repeaterTime == 0){
 				repeaterTime = 400;
 				Position nextpos = null;
@@ -249,6 +247,7 @@ public class Node{
 				QueuedMessage qdm = new QueuedMessage(request, nextpos);
 				if(!lucky){
 					sendQueue.add(qdm);
+					sentRequestsHT.put(request,8*network.getRequestTimeToLive());
 				} else {
 					for(int i = 0; i < eventArrayList.size(); i++){
 						Event event = (Event) eventArrayList.get(i);
@@ -274,8 +273,9 @@ public class Node{
 				sendQueue.add(qdm);
 			}
 		}
-		if(sendQueue.poll() != null){
-			QueuedMessage qdm = sendQueue.remove();
+		if(sendQueue.peek() != null){
+			System.out.println(sendQueue.peek());
+			QueuedMessage qdm = sendQueue.poll();
 			sendMessage(qdm);
 		}
 	}

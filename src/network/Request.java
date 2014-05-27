@@ -10,8 +10,6 @@ package network;
 public class Request extends Message{
 	/** Identifikationen på {@link Event} objektet som söks. */
 	private int targetID;
-	/** */
-	private boolean isOnTrack;
 	
 	/** Skapar ett Request.
 	 * 
@@ -30,10 +28,6 @@ public class Request extends Message{
 	 */
 	public int getTargetId(){
 		return targetID;
-	}
-	/** */
-	public boolean getIsOnTrack(){
-		return isOnTrack;
 	}
 	/** Lägg till {@link Position} till vägen tillbaka till Requestets 
 	 * skapelseposition.
