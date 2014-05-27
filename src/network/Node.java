@@ -140,7 +140,7 @@ public class Node{
 					sendQueue.add(qdMessage);
 				}
 			} else if (qd.getType() == 2){
-				
+				System.out.println("asd");
 				//Någonstans måste det läggas till så att den kollar om distance till eventet är noll från denna nod och då göra en response.
 				
 				Request request = qd.getRequest();
@@ -151,17 +151,20 @@ public class Node{
 					if(definedKeys.get(i) == request.getTargetId()){
 						isOnTrack = true;
 						ShortestPath sp =  (ShortestPath) eventTable.get(definedKeys.get(i));
+						System.out.println(sp.getDistance());
 						if(sp.getDistance() == 0){
 							foundEvent = true;
 						}
 					}
 				}
 				if(isOnTrack){
+					System.out.println("asd");
 					ShortestPath sp = (ShortestPath) eventTable.get(request.getTargetId());
 					nextpos = sp.getNextDirection();
 					QueuedMessage qdMessage = new QueuedMessage(request, nextpos);
 					sendQueue.add(qdMessage);
 				} else if (foundEvent != true){
+					
 					request.setTimeToLive(request.getTimeToLive()-1);
 					if(request.getTimeToLive() > 1){
 						request.addPosToPathHome(pos);
@@ -197,7 +200,7 @@ public class Node{
 					}
 				}
 			} else if (qd.getType() == 3){
-				System.out.println("Some node recieved a response");
+				
 				Response response = qd.getResponse();
 				response.popNextPosition();
 				if(response.getIsHome()){
