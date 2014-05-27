@@ -82,8 +82,6 @@ public class Network {
 	 * @see Position
 	 */
 	public Node GetNodeAtPosition(Position pos){
-		System.out.println(pos.getX());
-		System.out.println(pos.getY());
 		return nodeArray.get(pos.getX()).get(pos.getY());
 	}
 	

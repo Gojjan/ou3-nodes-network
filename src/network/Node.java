@@ -134,6 +134,7 @@ public class Node{
 						i++;
 					}
 					if(nextpos == null){
+						System.out.println(newNeighbours.size());
 						nextpos = newNeighbours.get(0);
 					}
 					QueuedMessage qdMessage = new QueuedMessage(agent, pos);
@@ -274,7 +275,6 @@ public class Node{
 			}
 		}
 		if(sendQueue.peek() != null){
-			System.out.println(sendQueue.peek());
 			QueuedMessage qdm = sendQueue.poll();
 			sendMessage(qdm);
 		}
