@@ -25,6 +25,7 @@ public class Network {
 	private int agentTimeToLive;
 	private int requestTimeToLive;
 	private int searchedRequests;
+	private int searchedRequests4 = 0;
 	
 	
 	/** Skapar ett nytt nätverk. Fyller varje position i matrisen med ett 
@@ -118,7 +119,8 @@ public class Network {
 	 * @return							den genererade identifikationen
 	 */
 	public int createUniqueID(){
-		int ID = lastSentID++;
+		
+		int ID = lastSentID + 1;
 		lastSentID = ID;
 		return ID;
 	}
@@ -131,7 +133,13 @@ public class Network {
 		return currentTime;
 	}
 	public int getRequestID(){
-		searchedRequests++;
-		return searchedRequests%4;
+		if(searchedRequests4 < 3){
+			searchedRequests4++;
+			return searchedRequests;
+		} else{
+			searchedRequests4 = 0;
+			searchedRequests++;
+			return searchedRequests;
+		}
 	}
 }

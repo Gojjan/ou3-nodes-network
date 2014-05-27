@@ -69,6 +69,9 @@ public class Node{
 	 * @param o
 	 */
 	public void receiveMessage(Object o){
+		if(neighbours.isEmpty()){
+			neighbours = network.checkNeighbours(pos);
+		}
 		if(o instanceof QueuedMessage){
 			QueuedMessage qd = (QueuedMessage) o;
 			if(qd.getType() == 1){
