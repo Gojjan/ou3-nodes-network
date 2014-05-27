@@ -18,6 +18,7 @@ public class Request extends Message{
 	 * @param pos							{@link Position} där den skapas
 	 */
 	public Request(int eventID, int timeToLive, Position pos){
+		System.out.println("Request");
 		targetID = eventID;
 		this.setTimeToLive(timeToLive);
 		this.setPathHome(new ShortestPath(pos));
