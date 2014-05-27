@@ -60,6 +60,7 @@ public class ShortestPath {
 	}
 	/** Tar bort översta värdet i vägstacken.*/
 	public void popNextDirection(){
+		
 		positionStack.pop();
 	}
 	public float getDistance(){

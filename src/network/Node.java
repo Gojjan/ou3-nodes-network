@@ -121,6 +121,7 @@ public class Node{
 				if(agent.getTimeToLive() > 1){
 					agent.setEventTable(agentTable);
 					//måste ändra så att den (om möjligt) skickar/köar till random granne den inte varit hos
+					definedKeys.addAll(agent.getDefinedKeys());
 					ArrayList<Position> newNeighbours = randomizeOrder();
 					Position nextpos = null;
 					boolean foundDestination = false;
@@ -142,6 +143,7 @@ public class Node{
 			} else if (qd.getType() == 2){
 				System.out.println("Request send");
 				//Någonstans måste det läggas till så att den kollar om distance till eventet är noll från denna nod och då göra en response.
+				
 				Request request = qd.getRequest();
 				Position nextpos = null;
 				boolean isOnTrack = false;
@@ -156,11 +158,13 @@ public class Node{
 					}
 				}
 				if(isOnTrack){
+					System.out.println("isOnTrack");
 					ShortestPath sp = (ShortestPath) eventTable.get(request.getTargetId());
 					nextpos = sp.getNextDirection();
 					QueuedMessage qdMessage = new QueuedMessage(request, nextpos);
 					sendQueue.add(qdMessage);
 				} else if (foundEvent != true){
+					System.out.println("foundEvent !=true");
 					request.setTimeToLive(request.getTimeToLive()-1);
 					if(request.getTimeToLive() > 1){
 						request.addPosToPathHome(pos);
@@ -189,12 +193,14 @@ public class Node{
 							event = eventArrayList.get(x);
 						}
 					}if (event != null){
+						
 						Response response = new Response(request.getPathHome(),event, pos);
 						QueuedMessage qdMessage = new QueuedMessage(response, response.getNextPostion());
 						sendQueue.add(qdMessage);
 					}
 				}
 			} else if (qd.getType() == 3){
+				System.out.println("Some node recieved a response");
 				Response response = qd.getResponse();
 				response.popNextPosition();
 				if(response.getIsHome()){
@@ -227,6 +233,7 @@ public class Node{
 				}
 			}
 			if(repeaterTime == 0){
+				
 				repeaterTime = 400;
 				Position nextpos = null;
 				int requestID = network.getRequestID();
@@ -237,17 +244,22 @@ public class Node{
 						ShortestPath sp = (ShortestPath) eventTable.get(requestID);
 						float distance = sp.getDistance();
 						if(distance == 0){
+							
 							lucky = true;
 						}else{
 							nextpos = sp.getNextDirection();
 						}
 					}
 				}
+				
 				if(nextpos == null){
+					
 					nextpos = (Position) neighbours.get((int) Math.random()*(neighbours.size()));
 				}
+				
 				QueuedMessage qdm = new QueuedMessage(request, nextpos);
 				if(!lucky){
+					
 					sendQueue.add(qdm);
 					sentRequestsHT.put(request,8*network.getRequestTimeToLive());
 				} else {
@@ -269,17 +281,25 @@ public class Node{
 			eventArrayList.add(event);
 			ShortestPath sp = new ShortestPath(pos);
 			eventTable.put(event.getID(), sp);
+			definedKeys.add(event.getID());
 			if(Math.random() <= agentChance){
 				Agent agent = new Agent(event, network.getAgentTimeToLive(), pos);
+					agent.setDefinedKeys(definedKeys);
 				Position nextpos = (Position) neighbours.get((int) Math.random()*(neighbours.size()-1));
 				QueuedMessage qdm = new QueuedMessage(agent, nextpos);
 				sendQueue.add(qdm);
 			}
 		}
 		if(sendQueue.peek() != null){
+
 			QueuedMessage qdm = sendQueue.poll();
 			Position pos2 = qdm.getDestination();
 			if(!network.GetNodeAtPosition(pos2).getIsHoldingMessage()){
+				/*if(isRepeater && qdm.getType() == 2){
+					System.out.println("Repeater sent request");
+				} else if(qdm.getType() == 2){
+					System.out.println("Non-repeater sent request");
+				}*/
 				sendMessage(qdm);
 			} else {
 				sendQueue.add(qdm);
