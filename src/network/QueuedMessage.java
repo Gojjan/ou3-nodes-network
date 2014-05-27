@@ -40,6 +40,7 @@ public class QueuedMessage extends Message{
 			type = 3;
 			response = (Response)o;
 		}
+		destination = pos;
 	}
 	public Agent getAgent(){
 		   return agent;
