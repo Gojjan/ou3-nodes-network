@@ -294,11 +294,6 @@ public class Node{
 			QueuedMessage qdm = sendQueue.poll();
 			Position pos2 = qdm.getDestination();
 			if(!network.GetNodeAtPosition(pos2).getIsHoldingMessage()){
-				/*if(isRepeater && qdm.getType() == 2){
-					System.out.println("Repeater sent request");
-				} else if(qdm.getType() == 2){
-					System.out.println("Non-repeater sent request");
-				}*/
 				sendMessage(qdm);
 			} else {
 				sendQueue.add(qdm);
@@ -309,7 +304,6 @@ public class Node{
 	/** Skickar ett {@link Message} objekt. */
 	public boolean sendMessage(QueuedMessage qdm){
 		Position posa = qdm.getDestination();
-		//System.out.println("Node at: "+pos.getX()+","+pos.getY()+" sent message to: "+posa.getX()+","+posa.getY());
 		network.GetNodeAtPosition(posa).receiveMessage(qdm);
 		return true;
 	}
