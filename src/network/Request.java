@@ -1,39 +1,38 @@
 package network;
 
-/** Klassen Request är ett barn till {@link Message}. Det är ett meddelande som 
- * efterfrågar ett event med en viss identifikation. Den bygger på rumor-routing 
+/** Klassen Request ï¿½r ett barn till {@link Message}. Det ï¿½r ett meddelande som 
+ * efterfrï¿½gar ett event med en viss identifikation. Den bygger pï¿½ rumor-routing 
  * algoritmen.
  * 
- * @author Henrik Sjöström
+ * @author Henrik Sjï¿½strï¿½m
  * @version 1.0 Maj 26 2014
  */
 public class Request extends Message{
-	/** Identifikationen på {@link Event} objektet som söks. */
+	/** Identifikationen pï¿½ {@link Event} objektet som sï¿½ks. */
 	private int targetID;
 	
 	/** Skapar ett Request.
 	 * 
-	 * @param eventID						sökta identifikationen
+	 * @param eventID						sï¿½kta identifikationen
 	 * @param timeToLive					tidssteg kvar
-	 * @param pos							{@link Position} där den skapas
+	 * @param pos							{@link Position} dï¿½r den skapas
 	 */
 	public Request(int eventID, int timeToLive, Position pos){
-		System.out.println("Request");
 		targetID = eventID;
 		this.setTimeToLive(timeToLive);
 		this.setPathHome(new ShortestPath(pos));
 	}
-	/** Returnerar den söka identifikationen
+	/** Returnerar den sï¿½ka identifikationen
 	 * 
-	 * @return								sökta identifikaionen
+	 * @return								sï¿½kta identifikaionen
 	 */
 	public int getTargetId(){
 		return targetID;
 	}
-	/** Lägg till {@link Position} till vägen tillbaka till Requestets 
+	/** Lï¿½gg till {@link Position} till vï¿½gen tillbaka till Requestets 
 	 * skapelseposition.
 	 * 
-	 * @param pos							{@link Position} objekt som läggs till
+	 * @param pos							{@link Position} objekt som lï¿½ggs till
 	 * @see Position
 	 */
 	public void addPosToPathHome(Position pos){
