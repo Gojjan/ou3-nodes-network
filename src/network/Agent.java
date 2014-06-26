@@ -1,8 +1,7 @@
 package network;
 
 import java.util.ArrayList;
-
-import com.sun.org.apache.xalan.internal.xsltc.runtime.Hashtable;
+import java.util.Hashtable;
 
 /** Agent är en implementation av en agent från rumor-routing algoritmen. 
  * 
@@ -12,7 +11,7 @@ import com.sun.org.apache.xalan.internal.xsltc.runtime.Hashtable;
  */
 public class Agent extends Message{
 	/** Tabell med händelser. */
-	private Hashtable eventTable = new Hashtable();
+	private Hashtable<Integer, ShortestPath> eventTable = new Hashtable<Integer, ShortestPath>();
 	/** */
 	private ArrayList<Integer> definedKeys = new ArrayList<Integer>();
 	
@@ -32,7 +31,7 @@ public class Agent extends Message{
 	/** Returnerar tabellen med händelser. 
 	 * @return eventTable		
 	 */
-	public Hashtable getEventTable(){
+	public Hashtable<Integer, ShortestPath> getEventTable(){
 		return eventTable;
 	}
 	

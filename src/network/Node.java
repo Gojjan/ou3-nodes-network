@@ -3,8 +3,7 @@ package network;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
-
-import com.sun.org.apache.xalan.internal.xsltc.runtime.Hashtable;
+import java.util.Hashtable;
 
 /** Node �r en klass som representerar en sensornod f�r att anv�ndas i en 
  * simulering av ett n�tverk. Sensor nodens beteende �r likt det av en nod i 
@@ -15,9 +14,9 @@ import com.sun.org.apache.xalan.internal.xsltc.runtime.Hashtable;
  */
 public class Node{
 	/** En tabell med nodens {@link Event} objekt. */
-	private Hashtable eventTable;
+	private Hashtable<Integer, ShortestPath> eventTable;
 	/** En tabell med skickade {@link Message} objekt.*/
-	private Hashtable sentRequestsHT;
+	private Hashtable<Request, Integer> sentRequestsHT;
 	/** K� med {@link Request} objekt. */
 	private ArrayList<Request> requests;
 	/** En flagga f�r om noden ska skicka {@link Request} objekt. */
@@ -57,7 +56,7 @@ public class Node{
 		agentChance = agentchance;
 		network = nnetwork;
 		sendQueue = new LinkedList<QueuedMessage>();
-		eventTable = new Hashtable();
+		eventTable = new Hashtable<Integer, ShortestPath>();
 	}
 	
 	/**
@@ -73,20 +72,26 @@ public class Node{
 			if(qd.getType() == 1){
 				Agent agent = qd.getAgent();
 				agent.setTimeToLive(agent.getTimeToLive()-1);
-				Hashtable agentTable = agent.getEventTable();
+				Hashtable<Integer, ShortestPath> agentTable = agent.getEventTable();
 				ArrayList<Integer> agentKeys = agent.getDefinedKeys();
 				for(int i = 0; i < agentTable.size(); i++){
-					int wat = agentKeys.size();
-					int wat2 = agentTable.size();					
-					ShortestPath sp0 = (ShortestPath) agentTable.get(agentKeys.get(i));
+					ShortestPath sp0 = agentTable.get(agentKeys.get(i));
 					Object p = agentTable.get(agentKeys.get(i));
-					sp0.addDirection(pos);
+					try{
+						sp0.addDirection(pos);
+					} catch(NullPointerException e){
+						
+						System.out.println("wat");
+						System.out.println(pos.getX());
+						System.out.println(pos.getY());
+						System.out.println(sp0);
+					}
 					agentTable.put(agentKeys.get(i), sp0);
 					boolean defined = false;
 					for(int j = 0; j < definedKeys.size(); j++){
 						if(agentKeys.get(i) == definedKeys.get(j)){
-							ShortestPath sp1 = (ShortestPath) agentTable.get(agentKeys.get(i));
-							ShortestPath sp2 = (ShortestPath) eventTable.get(definedKeys.get(j));
+							ShortestPath sp1 = agentTable.get(agentKeys.get(i));
+							ShortestPath sp2 = eventTable.get(definedKeys.get(j));
 							if(sp2.compareDistance(sp1) > 0){
 								//sp1 is shorter
 								eventTable.put(definedKeys.get(j), sp1);
@@ -106,8 +111,8 @@ public class Node{
 					boolean defined = false;
 					for(int j = 0; j < agentKeys.size(); j++){
 						if(definedKeys.get(i) == agentKeys.get(j)){
-							ShortestPath sp1 = (ShortestPath) eventTable.get(definedKeys.get(i));
-							ShortestPath sp2 = (ShortestPath) agentTable.get(agentKeys.get(j));
+							ShortestPath sp1 = eventTable.get(definedKeys.get(i));
+							ShortestPath sp2 = agentTable.get(agentKeys.get(j));
 							if(sp2.compareDistance(sp1) > 0){
 								//sp1 is shorter
 								eventTable.put(definedKeys.get(j), sp1);
@@ -154,14 +159,14 @@ public class Node{
 				for(int i = 0; i < definedKeys.size(); i++){
 					if(definedKeys.get(i) == request.getTargetId()){
 						isOnTrack = true;
-						ShortestPath sp =  (ShortestPath) eventTable.get(definedKeys.get(i));
+						ShortestPath sp =  eventTable.get(definedKeys.get(i));
 						if(sp.getDistance() == 0){
 							foundEvent = true;
 						}
 					}
 				}
 				if(isOnTrack){
-					ShortestPath sp = (ShortestPath) eventTable.get(request.getTargetId());
+					ShortestPath sp = eventTable.get(request.getTargetId());
 					nextpos = sp.getNextDirection();
 					QueuedMessage qdMessage = new QueuedMessage(request, nextpos);
 					sendQueue.add(qdMessage);
@@ -240,7 +245,7 @@ public class Node{
 				Request request = new Request(requestID, network.getRequestTimeToLive(), pos);
 				for(int i = 0; i < definedKeys.size(); i++){
 					if(requestID == definedKeys.get(i)){
-						ShortestPath sp = (ShortestPath) eventTable.get(requestID);
+						ShortestPath sp = eventTable.get(requestID);
 						float distance = sp.getDistance();
 						if(distance == 0){
 							
@@ -253,7 +258,7 @@ public class Node{
 				
 				if(nextpos == null){
 					
-					nextpos = (Position) neighbours.get((int) Math.random()*(neighbours.size()));
+					nextpos = neighbours.get((int) Math.random()*(neighbours.size()));
 				}
 				
 				QueuedMessage qdm = new QueuedMessage(request, nextpos);
@@ -263,7 +268,7 @@ public class Node{
 					sentRequestsHT.put(request,8*network.getRequestTimeToLive());
 				} else {
 					for(int i = 0; i < eventArrayList.size(); i++){
-						Event event = (Event) eventArrayList.get(i);
+						Event event = eventArrayList.get(i);
 						if(event.getID() == requestID){
 							System.out.println("Event id: "+requestID+", event date of birth: "
 									+event.getDateOfBirth()+", event place of birth: ["+pos.getX()+","+pos.getY()+"]\n");
@@ -284,7 +289,7 @@ public class Node{
 			if(Math.random() <= agentChance){
 				Agent agent = new Agent(event, network.getAgentTimeToLive(), pos);
 					agent.setDefinedKeys(definedKeys);
-				Position nextpos = (Position) neighbours.get((int) Math.random()*(neighbours.size()-1));
+				Position nextpos = neighbours.get((int) Math.random()*(neighbours.size()-1));
 				QueuedMessage qdm = new QueuedMessage(agent, nextpos);
 				sendQueue.add(qdm);
 			}
@@ -330,7 +335,7 @@ public class Node{
 	public void setRepeater(){
 		isRepeater = true;
 		requests = new ArrayList<Request>();
-		sentRequestsHT = new Hashtable();
+		sentRequestsHT = new Hashtable<Request, Integer>();
 		repeaterTime = 400;
 	}
 	/** Returnerar om noden skapar {@link Request} objekt.
