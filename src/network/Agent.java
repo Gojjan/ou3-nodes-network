@@ -25,6 +25,7 @@ public class Agent extends Message{
 	public Agent(Event event, int x, Position pos){
 		ShortestPath sp = new ShortestPath(pos);
 		eventTable.put(event.getID(), sp);
+		definedKeys.add(event.getID());
 		this.setTimeToLive(x);
 	}
 	

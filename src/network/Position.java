@@ -1,5 +1,7 @@
 package network;
 
+import Position;
+
 /** Position är en klass som representerar en position på ett två dimentionellt plan.
  * 
  * @author Ludvig Lindkvist
@@ -35,6 +37,24 @@ public class Position {
 	public int getY(){
 		return y;
 	}
+	
+	public Position getPosToSouth()
+	{
+		return new Position(this.x, this.y+1);
+	}
+	public Position getPosToNorth()
+	{
+		return new Position(this.x, this.y-1);
+	}
+	public Position getPosToWest()
+	{
+		return new Position(this.x-1, this.y);
+	}
+	public Position getPosToEast()
+	{
+		return new Position(this.x+1, this.y);
+	}
+	
 	/** Returnerar positionen 1 steg åt öst.
 	 * 
 	 * @return							den sökta positionen
