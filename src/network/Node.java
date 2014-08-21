@@ -76,14 +76,12 @@ public class Node{
 				ArrayList<Integer> agentKeys = agent.getDefinedKeys();
 				for(int i = 0; i < agentTable.size(); i++){
 					ShortestPath sp0 = agentTable.get(agentKeys.get(i));
-					Object p = agentTable.get(agentKeys.get(i));
 					try{
 						sp0.addDirection(pos);
 					} catch(NullPointerException e){
 						
 						System.out.println("wat");
-						System.out.println(pos.getX());
-						System.out.println(pos.getY());
+						System.out.println(agentKeys.get(i));
 						System.out.println(sp0);
 					}
 					agentTable.put(agentKeys.get(i), sp0);
