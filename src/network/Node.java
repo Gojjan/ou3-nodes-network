@@ -71,6 +71,7 @@ public class Node{
 			QueuedMessage qd = (QueuedMessage) o;
 			if(qd.getType() == 1){
 				Agent agent = qd.getAgent();
+				agent.visitNodeI(qd.getDestination());
 				agent.setTimeToLive(agent.getTimeToLive()-1);
 				Hashtable<Integer, ShortestPath> agentTable = agent.getEventTable();
 				ArrayList<Integer> agentKeys = agent.getDefinedKeys();
