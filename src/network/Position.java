@@ -1,7 +1,5 @@
 package network;
 
-import Position;
-
 /** Position är en klass som representerar en position på ett två dimentionellt plan.
  * 
  * @author Ludvig Lindkvist
