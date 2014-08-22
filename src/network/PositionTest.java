@@ -9,8 +9,18 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+/** PositionTest är ett unit-test för klassen Position.
+ * 
+ * @author Henrik Sjöström
+ * @version 1.0 Aug 22 2014
+ *
+ */
 public class PositionTest {
 
+	/** testPositionGetter. 
+	 * 
+	 * Testar alla Position's getters.
+	 */
 	@Test
 	public void testPositionGetters() {
 		Position p1 = new Position(1,2);
@@ -27,6 +37,10 @@ public class PositionTest {
 		assertEquals(new Position(1,3), p1.getPosToSouth(1,2));
 	}
 	
+	/** testPositionEquals. 
+	 * 
+	 * Testar Position's equals metod.
+	 */
 	@Test
 	public void testPositionEquals() {
 		Position p1 = new Position(1,2);
