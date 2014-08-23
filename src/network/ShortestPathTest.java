@@ -1,6 +1,3 @@
-/**
- * 
- */
 package network;
 
 import static org.junit.Assert.*;
@@ -11,12 +8,18 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-/**
- * @author H
+/** ShortestPathTest är ett unit-test för klassen ShortestPath.
+ * 
+ * @author Henrik Sjöström
+ * @version 1.0 Aug 22 2014
  *
  */
 public class ShortestPathTest {
 
+	/** testPathEmpty. 
+	 * 
+	 * Testar om ShortestPath börjar med rätt antal directions.
+	 */
 	@Test
 	public void testPathEmpty() {
 		ShortestPath s = new ShortestPath(new Position(1,2));
@@ -26,6 +29,10 @@ public class ShortestPathTest {
 		assertTrue(s.isEmpty());
 	}
 	
+	/** testAddDirection. 
+	 * 
+	 * Testar om ShortestPath lägger till nya directions korrekt.
+	 */
 	@Test
 	public void testAddDirection() {
 		ShortestPath s = new ShortestPath(new Position(1,2));
